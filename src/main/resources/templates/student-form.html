@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout(pageTitle='Thêm Sinh viên mới', content=~{::content})}">
+<body>
+
+<th:block th:fragment="content">
+
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h3 th:if="${student.id == null}">Thêm Sinh viên mới</h3>
+                        <h3 th:unless="${student.id == null}">Chỉnh sửa Sinh viên</h3>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="${student.id == null} ? @{/students} : @{/students/{id}(id=${student.id})}"
+                              th:object="${student}" method="post">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Họ và tên:</label>
+                                <input type="text" id="name" class="form-control" th:field="*{name}" placeholder="Nguyễn Văn A">
+                                <div class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="studentCode" class="form-label">Mã sinh viên:</label>
+                                <input type="text" id="studentCode" class="form-control" th:field="*{studentCode}" placeholder="SV240001">
+                                <div class="text-danger" th:if="${#fields.hasErrors('studentCode')}" th:errors="*{studentCode}"></div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="dateOfBirth" class="form-label">Ngày sinh:</label>
+                                <input type="date" id="dateOfBirth" class="form-control" th:field="*{dateOfBirth}">
+                                <div class="text-danger" th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}"></div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="major" class="form-label">Chuyên ngành:</label>
+                                <select id="major" class="form-select" th:field="*{major}">
+                                    <option value="">-- Chọn chuyên ngành --</option>
+                                    <option th:each="m : ${majors}" th:value="${m}" th:text="${m.displayName}"></option>
+                                </select>
+                                <div class="text-danger" th:if="${#fields.hasErrors('major')}" th:errors="*{major}"></div>
+                            </div>
+
+                            <!-- 5. Radio Buttons: Giới tính -->
+                            <div class="mb-3">
+                                <label class="form-label">Giới tính:</label>
+                                <div class="form-check form-check-inline">
+                                    <!-- Mỗi radio button cũng dùng th:field="*{gender}" để chúng được nhóm lại với nhau -->
+                                    <input class="form-check-input" type="radio" th:field="*{gender}" id="male" value="Nam">
+                                    <label class="form-check-label" for="male">Nam</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" th:field="*{gender}" id="female" value="Nữ">
+                                    <label class="form-check-label" for="female">Nữ</label>
+                                </div>
+                                <div class="text-danger" th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}"></div>
+                            </div>
+
+                            <!-- 6. Textarea: Ghi chú -->
+                            <div class="mb-3">
+                                <label for="notes" class="form-label">Ghi chú:</label>
+                                <textarea id="notes" class="form-control" rows="3" th:field="*{notes}"></textarea>
+                                <div class="text-danger" th:if="${#fields.hasErrors('notes')}" th:errors="*{notes}"></div>
+                            </div>
+
+                            <!-- 7. Checkbox: Điều khoản -->
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="agreedToTerms" th:field="*{agreedToTerms}">
+                                <label class="form-check-label" for="agreedToTerms">Tôi đồng ý với các điều khoản</label>
+                                <div class="text-danger" th:if="${#fields.hasErrors('agreedToTerms')}" th:errors="*{agreedToTerms}"></div>
+                            </div>
+
+                            <!-- Nút Submit và Hủy -->
+                            <div class="d-flex justify-content-end">
+                                <a th:href="@{/students}" class="btn btn-secondary me-2">Quay lại danh sách</a>
+                                <button type="submit" class="btn btn-primary">Lưu Sinh viên</button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+</body>
+</html>

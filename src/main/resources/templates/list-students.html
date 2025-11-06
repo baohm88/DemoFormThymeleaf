@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<!--
+    KỸ THUẬT LAYOUT VỚI THAM SỐ:
+    1. th:replace="~{layout :: html}": Dòng này nói rằng: "Hãy quên hết nội dung của file này đi,
+       thay vào đó, hãy lấy toàn bộ thẻ <html> từ file layout.html".
+    2. (pageTitle='Danh sách Sinh viên', content=~{::content}): Đây là phần truyền tham số.
+       - 'pageTitle': Truyền một chuỗi làm tiêu đề cho trang.
+       - 'content=~{::content}': Tìm một fragment tên là "content" TRONG CHÍNH FILE NÀY (ký hiệu ::),
+         và truyền nó vào biến 'content' của file layout.
+-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout(pageTitle='Danh sách Sinh viên', content=~{::content})}">
+<body>
+
+<!--
+    Đây chính là fragment "content" mà chúng ta sẽ truyền vào layout.
+    Nó chứa toàn bộ nội dung duy nhất của trang danh sách.
+-->
+<th:block th:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Danh sách Sinh viên</h1>
+        <a th:href="@{/students/new}" class="btn btn-primary">Thêm sinh viên mới</a>
+    </div>
+
+    <div th:if="${#lists.isEmpty(students)}" class="alert alert-warning">
+        Không tìm thấy sinh viên nào.
+    </div>
+
+    <div th:unless="${#lists.isEmpty(students)}">
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+            <tr>
+                <th>STT</th>
+                <th>Họ và tên</th>
+                <th>Chuyên ngành</th>
+                <th>Hành động</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="student, iterStat : ${students}">
+                <td th:text="${iterStat.count}"></td>
+                <td th:text="${student.name}"></td>
+                <td th:text="${student.major.displayName}"></td>
+                <td>
+                    <a th:href="@{/students/edit/{id}(id=${student.id})}" class="btn btn-warning btn-sm">Sửa</a>
+                    <a th:href="@{/students/delete/{id}(id=${student.id})}" class="btn btn-danger btn-sm"
+                       onclick="return confirm('Bạn có chắc chắn muốn xóa?')">Xóa</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</th:block>
+
+</body>
+</html>
